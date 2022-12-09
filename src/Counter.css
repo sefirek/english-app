@@ -1,0 +1,16 @@
+.counter-button {
+  width:50px;
+  height:50px;
+  font-size: 25px;
+}
+
+.counter-counter {
+  font-size: 25px;
+  padding: 12px;
+}
+
+.counter-wrapper {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}

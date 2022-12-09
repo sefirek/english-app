@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import splitTranslation from "./splitTranslation";
+import "./App.css";
+import vocabulary from "./vocabulary.json";
+import Counter from "./Counter";
+import DikiPhoneticImage from "./DikiPhoneticImage";
 
 function App() {
+  const [vocabularyGroupNumber, setVocabularyGroupNumber] = useState(0);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Counter
+        max={vocabulary.length}
+        onChange={setVocabularyGroupNumber}
+      ></Counter>
+      {vocabulary[vocabularyGroupNumber].map((record, id) => {
+        const translations = splitTranslation(record[1]);
+        return (
+          <div key={id}>
+            <div className="english-expression-container">
+              <span>{record[0]}</span>
+              <DikiPhoneticImage key={id + record[0]} expression={record[0]} />
+            </div>
+            <ul>
+              {translations.map(({ translation, description }, elementId) => {
+                return (
+                  <li key={elementId}>
+                    {translation}{" "}
+                    <span style={{ color: "green" }}>{description}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
+      })}
     </div>
   );
 }
