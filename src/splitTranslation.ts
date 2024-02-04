@@ -1,9 +1,17 @@
+
+abstract class ITranslationRecord {
+  translation:string = '';
+  description:string = '';
+  descriptions?:string[];
+}
+
 export default function splitTranslation(translationWithDescription = "") {
   const createTranslationObject = () => {
-    return {
+    const translationObject:ITranslationRecord = {
       translation: "",
       description: "",
     };
+    return translationObject;
   };
 
   const result = [];
@@ -51,35 +59,36 @@ export default function splitTranslation(translationWithDescription = "") {
   return result;
 }
 
-function groupTranslations(translations = []) {
-  const group = {};
+function groupTranslations(translations:Array<ITranslationRecord> = []) :void{
+  if(translations.length === 0) return;
+  const group = new Map<string,ITranslationRecord>();
   let record = translations[0];
-  group[record.translation] = record;
+  group.set(record.translation, record);
   record.descriptions = [record.description];
   for (let i = 1; i < translations.length; i += 1) {
     record = translations[i];
     const existingKey = getExistingKey(record.translation, group);
     if (existingKey) {
-      group[existingKey].descriptions.push(record.description);
+      group.get(existingKey)?.descriptions?.push(record.description);
       continue;
     }
-    group[record.translation] = record;
+    group.set(record.translation, record);
     record.descriptions = [record.description];
   }
   translations.length = 0;
-  Object.values(group).forEach(({ translation, descriptions }) => {
+  for (const {translation, descriptions} of group.values()){
     translations.push({
       translation,
-      description: descriptions.filter(Boolean).join(" "),
+      description: descriptions?.filter(Boolean).join(" ")|| "",
     });
-  });
+  }
 }
 
-function getExistingKey(key = "", group = {}) {
-  const keys = Object.keys(group);
-  for (let i = 0; i < keys.length; i += 1) {
-    if (keys[i].includes(key) || key.includes(keys[i])) {
-      return keys[i];
+function getExistingKey(key = "", group = new Map<string, ITranslationRecord>()) {
+  const keys = group.keys()
+  for (const k of keys) {
+    if (k.includes(key) || key.includes(k)) {
+      return k;
     }
   }
   return "";
