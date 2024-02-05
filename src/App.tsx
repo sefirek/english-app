@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import splitTranslation from './splitTranslation';
 import './App.css';
-import vocabulary from './vocabulary';
+import vocabulary from './vocabulary.json';
 import Counter from './Counter';
 import DikiPhoneticImage from './DikiPhoneticImage';
 
@@ -9,10 +9,7 @@ function App() {
 	const [vocabularyGroupNumber, setVocabularyGroupNumber] = useState(0);
 	return (
 		<div>
-			<Counter
-				max={vocabulary.length}
-				onChange={setVocabularyGroupNumber}
-			></Counter>
+			<Counter max={vocabulary.length} onChange={setVocabularyGroupNumber}></Counter>
 			{vocabulary[vocabularyGroupNumber].map((record, id) => {
 				const translations = splitTranslation(record[1]);
 				// const audio = new Audio(`http://diki.pl/images-common/en/mp3/${record[0].split(" ").at(-1)}.mp3`)
@@ -26,8 +23,7 @@ function App() {
 							{translations.map(({ translation, description }, elementId) => {
 								return (
 									<li key={elementId}>
-										{translation}{' '}
-										<span style={{ color: 'green' }}>{description}</span>
+										{translation} <span style={{ color: 'green' }}>{description}</span>
 									</li>
 								);
 							})}
